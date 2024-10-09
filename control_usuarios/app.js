@@ -2,6 +2,8 @@ const express = require ('express');
 
 const app = express()
 
+app.use(express.json());
+
 const usuarios = [
     {
         id: 1,
@@ -48,7 +50,22 @@ app.get("/usuarios/:id", (req, res) => {
     }
     res.status(200).send(usuario);
 });
+//End point
+//para agregar un elemento nuevo se ocupa post
 
+app.post("/usuarios", (req, res) => {
+    //console.log(req.body);
+    const {nombre, apellido, email} = req.body;
+    /*
+    validaciones
+
+    -La información debe estar completa, si alguna de ellas no esta completa que mande un error (400)
+    -El email debe de ser único de lo controrio debe de mandar un error (400)
+    
+    */
+    usuarios.push({id: usuarios.length + 1, nombre, apellido, email})
+    res.status(201).send("El usuario se agregó correctamente");
+})
 
 
 app.listen(3000, () => {
