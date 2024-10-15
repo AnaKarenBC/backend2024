@@ -56,13 +56,24 @@ app.get("/usuarios/:id", (req, res) => {
 app.post("/usuarios", (req, res) => {
     //console.log(req.body);
     const {nombre, apellido, email} = req.body;
-    /*
+    /*---TAREA----
     validaciones
 
     -La información debe estar completa, si alguna de ellas no esta completa que mande un error (400)
     -El email debe de ser único de lo controrio debe de mandar un error (400)
     
     */
+    // Validación: La información debe estar completa
+    if (!nombre || !apellido || !email) {
+        return res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
+    }
+
+    // Validación: El email debe ser único
+    const emailExistente = usuarios.find(usuario => usuario.email === email);
+    if (emailExistente) {
+        return res.status(400).send({error: "El email ya está en uso. Por favor, utilice otro email."});
+    }
+
     usuarios.push({id: usuarios.length + 1, nombre, apellido, email})
     res.status(201).send("El usuario se agregó correctamente");
 })
