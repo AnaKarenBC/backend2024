@@ -1,4 +1,6 @@
 const express = require ('express');
+const req = require('express/lib/request');
+const res = require('express/lib/response');
 
 const app = express()
 
@@ -65,19 +67,63 @@ app.post("/usuarios", (req, res) => {
     */
     // Validación: La información debe estar completa
     if (!nombre || !apellido || !email) {
-        return res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
+        res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
+        return;
     }
 
     // Validación: El email debe ser único
     const emailExistente = usuarios.find(usuario => usuario.email === email);
     if (emailExistente) {
-        return res.status(400).send({error: "El email ya está en uso. Por favor, utilice otro email."});
+        res.status(400).send({error: "El email ya está en uso. Por favor, utilice otro email."});
+        return;
     }
+        if(usuario === undefined){
+        //res.status(400).send({error: "Usuario no encontrado"}); //mensaje sencillo
+        res.status(400).send({error: `El usuario con id ${id} no existe`})
+        return;
+    }
+    res.status(200).send(usuario);
 
     usuarios.push({id: usuarios.length + 1, nombre, apellido, email})
     res.status(201).send("El usuario se agregó correctamente");
 })
+//validar que no nos repitan el correo, ojo debemos descartar el caso cuando el correo de ese usuario no se actualize
+//lo que quiero es que cuando se actualizen todos los campos y el correo no, me permita guardar todos los campos
 
+app.put("/usuarios/:id",(req, res) =>{
+    
+    const {nombre, apellido, email} = req.body;
+    const id= +req.params.id;
+    if (!nombre || !apellido || !email) {
+        res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
+        return;
+    }
+
+    if(isNaN(id)){
+        res.status(400).send({error: "El id debe de ser un número"});
+        return;
+    }
+
+    const usuario = usuarios.find((usuario) => usuario.id === +id);
+    if(usuario === undefined){
+        //res.status(400).send({error: "Usuario no encontrado"}); //mensaje sencillo
+        res.status(400).send({error: `El usuario con id ${id} no existe`})
+        return;
+    }
+
+    usuarios.forEach((usuarios) =>{
+        if(usuario.id === id){
+            usuario.nombre = nombre;
+            usuario.apellido = apellido;
+            usuario.email = email;
+        }
+    })
+    res.status(200).send("El usuario se actualizó correctamente");
+})
+
+app.patch("/usuario/:id",(req, res) =>{
+
+})
 
 app.listen(3000, () => {
     console.log("Servidor corriendo en http://localhost:3000/");
