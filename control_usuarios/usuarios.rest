@@ -15,12 +15,12 @@ Content-type: application/json
 }
 
 ###
-PUT http://localhost:3000/usuarios/2
+PUT http://localhost:3000/usuarios/3
 Content-type: application/json
 
 {
-    "nombre": "Julio",
-    "apellido": "Carmona",
+    "nombre": "Ana Karen",
+    "apellido": "Baltazar Cabrera",
     "email": "julioCarmona@gmail.com"
 
 }

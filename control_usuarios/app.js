@@ -58,9 +58,9 @@ app.get("/usuarios/:id", (req, res) => {
 app.post("/usuarios", (req, res) => {
     //console.log(req.body);
     const {nombre, apellido, email} = req.body;
+    /*
     /*---TAREA----
     validaciones
-
     -La información debe estar completa, si alguna de ellas no esta completa que mande un error (400)
     -El email debe de ser único de lo controrio debe de mandar un error (400)
     
@@ -70,23 +70,16 @@ app.post("/usuarios", (req, res) => {
         res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
         return;
     }
-
     // Validación: El email debe ser único
     const emailExistente = usuarios.find(usuario => usuario.email === email);
     if (emailExistente) {
         res.status(400).send({error: "El email ya está en uso. Por favor, utilice otro email."});
         return;
     }
-        if(usuario === undefined){
-        //res.status(400).send({error: "Usuario no encontrado"}); //mensaje sencillo
-        res.status(400).send({error: `El usuario con id ${id} no existe`})
-        return;
-    }
-    res.status(200).send(usuario);
-
     usuarios.push({id: usuarios.length + 1, nombre, apellido, email})
     res.status(201).send("El usuario se agregó correctamente");
 })
+
 //validar que no nos repitan el correo, ojo debemos descartar el caso cuando el correo de ese usuario no se actualize
 //lo que quiero es que cuando se actualizen todos los campos y el correo no, me permita guardar todos los campos
 
@@ -98,19 +91,16 @@ app.put("/usuarios/:id",(req, res) =>{
         res.status(400).send({error: "La información está incompleta. Todos los campos son obligatorios."});
         return;
     }
-
     if(isNaN(id)){
         res.status(400).send({error: "El id debe de ser un número"});
         return;
     }
-
     const usuario = usuarios.find((usuario) => usuario.id === +id);
     if(usuario === undefined){
         //res.status(400).send({error: "Usuario no encontrado"}); //mensaje sencillo
         res.status(400).send({error: `El usuario con id ${id} no existe`})
         return;
     }
-
     usuarios.forEach((usuarios) =>{
         if(usuario.id === id){
             usuario.nombre = nombre;
@@ -120,9 +110,7 @@ app.put("/usuarios/:id",(req, res) =>{
     })
     res.status(200).send("El usuario se actualizó correctamente");
 })
-
 app.patch("/usuario/:id",(req, res) =>{
-
 })
 
 app.listen(3000, () => {
