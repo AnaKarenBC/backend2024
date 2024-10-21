@@ -1,26 +1,35 @@
 GET http://localhost:3000/usuarios
 
 ###
-GET http://localhost:3000/usuarios/3
+GET http://localhost:3000/usuarios/5
 
 ###
 POST http://localhost:3000/usuarios/
-Content-type: application/json
+content-type: application/json
 
 {
-    "nombre": "Ana Karen",
-    "apellido": "Cabrera",
-    "email": "ak2@gmail.com"
-
+  "nombre": "Julio",
+  "apellido": "Aguilar",
+  "email": "julio2@gmail.com"
 }
 
 ###
-PUT http://localhost:3000/usuarios/3
-Content-type: application/json
+PUT http://localhost:3000/usuarios/1
+content-type: application/json
 
 {
-    "nombre": "Ana Karen",
-    "apellido": "Baltazar Cabrera",
-    "email": "julioCarmona@gmail.com"
-
+  "nombre": "Carlos",
+  "apellido": "Aguilar",
+  "email": "juanperez@gmail.com"
 }
+
+###
+PATCH http://localhost:3000/usuarios/2
+content-type: application/json
+
+{
+  "nombre": "Carlos"
+}
+
+###
+DELETE http://localhost:3000/usuarios/1
