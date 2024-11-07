@@ -5,11 +5,12 @@ GET http://localhost:3000/users/1
 
 ###
 POST http://localhost:3000/users/
-Content-Type: 
-application/json
+Content-Type: application/json
 
 {
-    "name": "Ana"
+    "username": "batman",
+    "password": "batmobile",
+    "email": "batman@batmobile.com"
 }
 
 ###

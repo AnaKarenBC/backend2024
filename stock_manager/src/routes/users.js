@@ -1,10 +1,10 @@
 const {Router} = require('express');
-const {getAll, getById, createUser, updateUser} = require('../controllers/users');
+const {getAllUsers, getUserById, createUser, updateUser} = require('../controllers/users');
 
 const router = Router();
 
-router.get('/', getAll);
-router.get('/:id', getById);
+router.get('/', getAllUsers);
+router.get('/:id', getUserById);
 
 //Agregar un usuario nuevo
 router.post('/', createUser);
