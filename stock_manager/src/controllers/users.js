@@ -88,30 +88,47 @@ const createUser = async(req = request, res = response) => {
 
 };
 
-// Actualizar un usuario
-const updateUser = (req = request, res = response) => {
-  const {id} = req.params;
-  const {name} = req.body;
+// Actualizar un usuario en la base de datos
+const updateUser = async (req = request, res = response) => {
+  const { id } = req.params;
+  const { username } = req.body; // Asegúrate de que el campo aquí coincide con el nombre en el JSON
 
   if (isNaN(id)) {
-      res.status(400).send('Invalid ID');
-      return;
+    res.status(400).send('Invalid ID');
+    return;
   }
 
-  const user = users.find(user => user.id === +id);
+  if (!username) {
+    res.status(400).send('Username is required');
+    return;
+  }
 
-  if (!user) {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Verificar si el usuario existe
+    const existingUser = await conn.query(usersQueries.getUserById, [id]);
+    if (existingUser.length === 0) {
       res.status(404).send('User not found');
       return;
-  }
-
-  users.forEach(user=>{
-    if(user.id===+id){
-        user.name=name;
     }
-});
-res.send('user update succerfully');
-}
+
+    // Actualizar el nombre de usuario
+    const result = await conn.query(usersQueries.updateUserName, [username, id]);
+
+    if (result.affectedRows === 0) {
+      res.status(500).send('User could not be updated');
+      return;
+    }
+
+    res.send('User updated successfully');
+  } catch (error) {
+    res.status(500).send(error.message || 'An error occurred');
+  } finally {
+    if (conn) conn.end();
+  }
+};
 
 // Eliminar un usuario por ID
 const deleteUser = (req = request, res = response) => {
@@ -133,4 +150,4 @@ const deleteUser = (req = request, res = response) => {
   res.send('User deleted');
 };
 
-module.exports = {getAllUsers, getUserById, createUser, updateUser, deleteUser };
+module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
