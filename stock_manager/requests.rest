@@ -8,9 +8,9 @@ POST http://localhost:3000/users/
 Content-Type: application/json
 
 {
-    "username": "batman",
-    "password": "batmobile",
-    "email": "batman@batmobile.com"
+    "username": "Ironman",
+    "password": "Jarvis",
+    "email": "ironman@avengers.com"
 }
 
 ###
@@ -22,4 +22,14 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:3000/users/2
+DELETE  http://localhost:3000/users/5
+
+
+###
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "username": "Ironman",
+    "password": "Jarvis"
+}

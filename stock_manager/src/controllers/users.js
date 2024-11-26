@@ -1,6 +1,9 @@
 const{request, response}=require('express');
+const bcrypt = require('bcrypt');
 const pool = require('../db/connection.js');
 const { usersQueries } = require('../moduls/users.js');
+
+const saltRounds = 10;
 //const users=[
 //    {id: 1, name: 'Max'},
 //    {id: 2, name: 'Daniel'},
@@ -61,6 +64,7 @@ const createUser = async(req = request, res = response) => {
       res.status(400).send('Bad request. Some fields are missinng.');
       return;
   }
+
   let conn;
   try{
     conn = await pool.getConnection();
@@ -70,8 +74,10 @@ const createUser = async(req = request, res = response) => {
       res.status(409).send('Username alredy exists');
       return;
     }
+
+    const hasPassword = await bcrypt.hash(password, saltRounds);
     
-    const newUser = await conn.query(usersQueries.create, [username, password, email]);
+    const newUser = await conn.query(usersQueries.create, [username, hasPassword, email]);
 
     if(newUser.affectedRowns === 0){
       res.status(500).send('User could not be created');
@@ -87,6 +93,37 @@ const createUser = async(req = request, res = response) => {
   }
 
 };
+
+const loginUser = async (req = request, res = response) => {
+    const {username, password} = req.body;
+
+    if (!username || !password) {
+        res.status(400).send("username and password are required");
+        return;
+    }
+
+    try {
+        conn = await pool.getConnection();
+        const user = await conn.query(usersQueries.getByUsername, [username]);
+
+        if (user.length === 0) {
+            res.status(404).send('User not found');
+            return;
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user[0].password);
+
+        if (!passwordMatch) {
+            res.status(403).send('Bad usernaeme or password');
+            return;
+        }
+    }catch (error) {
+        res.status(500).send(error);
+    }finally {
+        if (conn) conn.end();
+    }
+}
+
 
 // Actualizar un usuario en la base de datos
 const updateUser = async (req = request, res = response) => {
@@ -131,7 +168,7 @@ const updateUser = async (req = request, res = response) => {
 };
 
 // Eliminar un usuario por ID
-const deleteUser = (req = request, res = response) => {
+const deleteUser = async (req = request, res = response) => {
   const {id} = req.params;
 
   if (isNaN(id)) {
@@ -139,15 +176,32 @@ const deleteUser = (req = request, res = response) => {
       return;
   }
 
-  const user = users.find(user => user.id === +id);
+  let conn;
+  try{
+    conn = await pool.getConnection();
+    const user = await conn.query(usersQueries.getUserById, [+id]);
 
-  if (!user) {
-    res.status(404).send('User not found');
+    if(user.length === 0){
+      res.status(400).send('user not found');
+      return
+    }
+
+    const deleteUser = await conn.query(usersQueries.delete, [+id]);
+
+    if(deleteUser.affectedRows === 0){
+      res.status(500).send('User could not be deleted');
+      return;
+    }
+
+    res.send("User deleted successfuly");
+  }catch (error){
+    res.status(500).send(error);
     return;
-}
+  } finally{
+    if(conn) conn.end();
+  }
+  
 
-  users.splice(users.findIndex ((user)=>user.id===+id),1);
-  res.send('User deleted');
 };
 
-module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+module.exports = { getAllUsers, getUserById, createUser, loginUser, updateUser, deleteUser };
