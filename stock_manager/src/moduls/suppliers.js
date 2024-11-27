@@ -1,9 +1,13 @@
-const suppliersQueries = {
-    getAll: 'SELECT * FROM suppliers',
-    getById: 'SELECT * FROM suppliers WHERE id = ?',
-    create: 'INSERT INTO suppliers (name, email, phone_number) VALUES (?,?,?)',
-    update: 'UPDATE suppliers SET name = ?, email = ?, phone_number = ? WHERE id = ?',
-    delete: 'UPDATE suppliers SET IS_ACTIVE = 0 WHERE id = ?',
+//moduls/suppliers.js
+
+const suppliersQueries={
+
+    getAllSupp: 'SELECT * FROM suppliers WHERE is_active = 1',
+    getByRfc: 'SELECT * FROM suppliers WHERE rfc = ? AND is_active = 1',
+    create: 'INSERT INTO suppliers (rfc, name, description, phone_number, email, address, is_active) VALUES (?,?,?,?,?,?,?)',
+    updateByRfc: 'UPDATE suppliers SET name = ?, description = ?, phone_number = ?, email = ?, address = ?, is_active = ? WHERE rfc = ?',
+    deleteSupp: 'UPDATE suppliers SET is_active = 0 WHERE rfc = ?'
+
 };
 
 module.exports = {suppliersQueries};
