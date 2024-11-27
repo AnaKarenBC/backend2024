@@ -27,8 +27,8 @@ PUT http://localhost:3000/products_suppliers/1
 Content-Type: application/json
 
 {
-    "product_id": 2,
-    "supplier_rfc": "123456",
+    "product_id": 6,
+    "supplier_rfc": "13567890",
     "notes": "Updated product-supplier association"
 }
 

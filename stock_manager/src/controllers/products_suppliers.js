@@ -60,7 +60,6 @@ const createProductSupplier = async (req = request, res = response) => {
 };
 
 // Actualizar un registro por ID
-
 const updateProductSupplierById = async (req = request, res = response) => {
     const { id } = req.params;
     const { product_id, supplier_rfc, notes } = req.body;
@@ -78,7 +77,6 @@ const updateProductSupplierById = async (req = request, res = response) => {
         // Verificar si el product_id existe
         const productExists = await conn.query('SELECT 1 FROM products WHERE id = ?', [product_id]);
         if (productExists.length === 0) {
-            //console.error(`Product ID ${product_id} not found`);
             res.status(500).send('Product not found');
             return;
         }
@@ -86,26 +84,25 @@ const updateProductSupplierById = async (req = request, res = response) => {
         // Verificar si el supplier_rfc existe
         const supplierExists = await conn.query('SELECT 1 FROM suppliers WHERE rfc = ?', [supplier_rfc]);
         if (supplierExists.length === 0) {
-            //console.error(`Supplier RFC ${supplier_rfc} not found`);
-            res.status(500).send('PRFC not found');
+            res.status(500).send('RFC not found');
             return;
         }
 
         // Realizar la actualización
         const result = await conn.query(productSuppliersQueries.updateById, [product_id, supplier_rfc, notes, id]);
         if (result.affectedRows === 0) {
-            //console.error(`Product-Supplier with ID ${id} not found for update`);
             res.status(404).send('Product-Supplier not found');
         } else {
             res.send('Product-Supplier updated successfully');
         }
-    } catch (error)  {
-        //console.error('Error during update:', error);
+    } catch (error) {
+        console.error('Error during update:', error);
         res.status(500).send('Internal Server Error');
     } finally {
         if (conn) conn.end();
     }
 };
+
 
 
 
