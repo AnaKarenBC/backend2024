@@ -179,3 +179,18 @@ const destroyUser = async (req = request, res = response) =>{
 module.exports = {
     getAllUsers, createUser, getUser, updateUser, destroyUser
 };
+
+/*
+const  = async (req = request, res = response) =>{
+    
+    let conn;
+    try{
+
+    }catch(error){
+        res.status(500).json(error);
+        return;
+    }finally{
+        if (conn) conn.end();
+    }
+}
+    */
