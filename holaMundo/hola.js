@@ -1,4 +1,4 @@
-const mensaje = "Hola Mundo"
+const mensaje = "Hola Clase"
 const otromensaje = "Este es otro mensaje"
 
 console.log(mensaje)
